@@ -1,13 +1,15 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DeviceManager.Data
 {
     public class DeviceService: IDeviceSerivce
     {
-        private static readonly Device[] ExampleDevices = new[]
+        private static readonly IList<Device> ExampleDevices = new[]
         {
             new Device {
-                DeviceId = "1glmLrTZqf9YZleN",
+                Id = "1glmLrTZqf9YZleN",
                 Name = "S7-150009",
                 DeviceTypeId = "Beweis",
                 Failsafe = true,
@@ -22,7 +24,7 @@ namespace DeviceManager.Data
                 PositionAxisNumber = 0
             },
             new Device {
-                DeviceId = "1glmLrTZqf9YZleN",
+                Id = "1glmLrTZqf9YZleN",
                 Name = "S7-1500",
                 DeviceTypeId = "S7_1500",
                 Failsafe = true,
@@ -38,7 +40,7 @@ namespace DeviceManager.Data
                 AdvancedEnvironmentalConditions = false
             },
             new Device {
-                DeviceId = "9RLMugEpCVSeemZ5",
+                Id = "9RLMugEpCVSeemZ5",
                 Name = "ET 200SP",
                 DeviceTypeId = "ET200_SP",
                 Failsafe = false,
@@ -55,7 +57,7 @@ namespace DeviceManager.Data
                 AdvancedEnvironmentalConditions = false
             },
             new Device {
-                DeviceId = "9RLMugEbCVSeemZ4",
+                Id = "9RLMugEbCVSeemZ4",
                 Name = "S7-300",
                 DeviceTypeId = "S7_300",
                 Failsafe = true,
@@ -73,6 +75,8 @@ namespace DeviceManager.Data
             }
         };
 
-        public Task<Device[]> GetDevicesAsync() => Task.FromResult(ExampleDevices);
+        public Task<IList<Device>> GetDevicesAsync() => Task.FromResult(ExampleDevices);
+
+        public Task<Device> GetDeviceByIdAsync(string id) => Task.FromResult(ExampleDevices.FirstOrDefault(device => device.Id == id));
     }
 }
