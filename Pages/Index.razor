@@ -1,7 +1,60 @@
 @page "/"
 
-<h1>Hello, world!</h1>
+<h1>DeviceManager v0.1</h1>
 
-Welcome to your new app.
+<p>
+    DeviceManager is a Demo Application which allows you to upload and display your device details.<br>
+    An example file for upload can be found <a href="assets/data.json" target="_blank" rel="noopener noreferrer">here</a>.
+</p>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<div class="d-flex flex-column align-items-center my-4">
+    @* @TODO Implement file upload *@
+    <button type="button" class="btn btn-primary" href="">
+        Upload
+    </button>
+</div>
+
+<p>
+    <h4>Example Format of the files to upload:</h4>
+    <pre>
+        <code>
+{
+    "devices": [
+        {
+            "id": "1glmLrTZqf9YZleN",
+            "name": "S7-150009",
+            "deviceTypeId": "Beweis",
+            "failsafe": true,
+            "tempMin": 0,
+            "tempMax": 60,
+            "installationPosition": "horizontal",
+            "insertInto19InchCabinet": true,
+            "motionEnable": true,
+            "siplusCatalog": true,
+            "simaticCatalog": true,
+            "rotationAxisNumber": 0,
+            "positionAxisNumber": 0
+        },
+        {
+            "id": "9RLMugEbCVSeemZ4",
+            "name": "S7-300",
+            "deviceTypeId": "S7_300",
+            "failsafe": true,
+            "tempMin": 0,
+            "tempMax": 40,
+            "installationPosition": "vertical",
+            "insertInto19InchCabinet": false,
+            "motionEnable": false,
+            "siplusCatalog": false,
+            "simaticCatalog": false,
+            "rotationAxisNumber": 0,
+            "positionAxisNumber": 0,
+            "terminalElement": true,
+            "advancedEnvironmentalConditions": false
+        },
+    ],
+}
+        </code>
+    </pre>
+</p>
+
