@@ -1,7 +1,8 @@
-@page "/devices/{deviceId}"
+@page "/devices/{id:int}"
 
 @using DeviceManager.Data
-@inject IDeviceSerivce DeviceService
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<DeviceStoreContext> DbFactory
 
 <h1>Device Details:</h1>
 
@@ -11,7 +12,7 @@
         Loading ...
     </div>
 }
-else if (device.Id == null) {
+else if (invalidDeviceId) {
     <div class="alert alert-danger" role="alert">
         The Device you requested couldn't be found!
     </div>
@@ -28,28 +29,20 @@ else
             </thead>
             <tbody>
                 <tr>
-                    <td class="align-middle">Id</td>
-                    <td class="align-middle">@DeviceId</td>
-                </tr>
-                <tr>
                     <td class="align-middle">Name</td>
                     <td class="align-middle">@device.Name</td>
-                </tr>
-                <tr>
-                    <td class="align-middle">DeviceTypeId</td>
-                    <td class="align-middle">@device.DeviceTypeId</td>
                 </tr>
                 <tr>
                     <td class="align-middle">Failsafe</td>
                     <td class="align-middle">@device.Failsafe</td>
                 </tr>
                 <tr>
-                    <td class="align-middle">TempMin</td>
-                    <td class="align-middle">@device.TempMin</td>
+                    <td class="align-middle">DeviceTypeId</td>
+                    <td class="align-middle">@device.DeviceTypeId</td>
                 </tr>
                 <tr>
-                    <td class="align-middle">TempMax</td>
-                    <td class="align-middle">@device.TempMax</td>
+                    <td class="align-middle">TempMin/TempMax</td>
+                    <td class="align-middle">@device.TempMin/@device.TempMax</td>
                 </tr>
                 <tr>
                     <td class="align-middle">InstallationPosition</td>
@@ -58,26 +51,6 @@ else
                 <tr>
                     <td class="align-middle">InsertInto19InchCabinet</td>
                     <td class="align-middle">@device.InsertInto19InchCabinet</td>
-                </tr>
-                <tr>
-                    <td class="align-middle">MotionEnable</td>
-                    <td class="align-middle">@device.MotionEnable</td>
-                </tr>
-                <tr>
-                    <td class="align-middle">SiplusCatalog</td>
-                    <td class="align-middle">@device.SiplusCatalog</td>
-                </tr>
-                <tr>
-                    <td class="align-middle">SimaticCatalog</td>
-                    <td class="align-middle">@device.SimaticCatalog</td>
-                </tr>
-                <tr>
-                    <td class="align-middle">RotationAxisNumber</td>
-                    <td class="align-middle">@device.RotationAxisNumber</td>
-                </tr>
-                <tr>
-                    <td class="align-middle">PositionAxisNumber</td>
-                    <td class="align-middle">@device.PositionAxisNumber</td>
                 </tr>
                 @if (device.TerminalElement != null) {
                     <tr>
@@ -103,11 +76,21 @@ else
 </div>
 
 @code {
-    [Parameter] public string DeviceId { get; set; }
+    [Parameter] public int id { get; set; }
     private Device device;
+    private bool invalidDeviceId = false;
 
     protected override async Task OnInitializedAsync()
     {
-        device = await DeviceService.GetDeviceByIdAsync(DeviceId);
+        using var context = DbFactory.CreateDbContext();
+        try
+        {
+            device = await context.Devices.FirstAsync(entity => entity.Id == id);
+        }
+        catch (Exception ex)
+        {
+            invalidDeviceId = true;
+            Console.Error.WriteLine(ex);
+        }
     }
 }
