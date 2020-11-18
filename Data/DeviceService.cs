@@ -77,6 +77,7 @@ namespace DeviceManager.Data
 
         public Task<IList<Device>> GetDevicesAsync() => Task.FromResult(ExampleDevices);
 
-        public Task<Device> GetDeviceByIdAsync(string id) => Task.FromResult(ExampleDevices.FirstOrDefault(device => device.Id == id));
+        public Task<Device> GetDeviceByIdAsync(string id) =>
+            Task.FromResult(ExampleDevices.FirstOrDefault(device => device.Id == id) ?? new Device());
     }
 }

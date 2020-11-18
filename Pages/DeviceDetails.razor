@@ -1,0 +1,113 @@
+@page "/devices/{deviceId}"
+
+@using DeviceManager.Data
+@inject IDeviceSerivce DeviceService
+
+<h1>Device Details:</h1>
+
+@if (device == null)
+{
+    <div class="alert alert-warning" role="alert">
+        Loading ...
+    </div>
+}
+else if (device.Id == null) {
+    <div class="alert alert-danger" role="alert">
+        The Device you requested couldn't be found!
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover table-sm">
+            <thead>
+                <tr>
+                    <th style="width: 33%;">Fieldname</th>
+                    <th style="width: 66%;">FieldValue</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="align-middle">Id</td>
+                    <td class="align-middle">@DeviceId</td>
+                </tr>
+                <tr>
+                    <td class="align-middle">Name</td>
+                    <td class="align-middle">@device.Name</td>
+                </tr>
+                <tr>
+                    <td class="align-middle">DeviceTypeId</td>
+                    <td class="align-middle">@device.DeviceTypeId</td>
+                </tr>
+                <tr>
+                    <td class="align-middle">Failsafe</td>
+                    <td class="align-middle">@device.Failsafe</td>
+                </tr>
+                <tr>
+                    <td class="align-middle">TempMin</td>
+                    <td class="align-middle">@device.TempMin</td>
+                </tr>
+                <tr>
+                    <td class="align-middle">TempMax</td>
+                    <td class="align-middle">@device.TempMax</td>
+                </tr>
+                <tr>
+                    <td class="align-middle">InstallationPosition</td>
+                    <td class="align-middle">@device.InstallationPosition</td>
+                </tr>
+                <tr>
+                    <td class="align-middle">InsertInto19InchCabinet</td>
+                    <td class="align-middle">@device.InsertInto19InchCabinet</td>
+                </tr>
+                <tr>
+                    <td class="align-middle">MotionEnable</td>
+                    <td class="align-middle">@device.MotionEnable</td>
+                </tr>
+                <tr>
+                    <td class="align-middle">SiplusCatalog</td>
+                    <td class="align-middle">@device.SiplusCatalog</td>
+                </tr>
+                <tr>
+                    <td class="align-middle">SimaticCatalog</td>
+                    <td class="align-middle">@device.SimaticCatalog</td>
+                </tr>
+                <tr>
+                    <td class="align-middle">RotationAxisNumber</td>
+                    <td class="align-middle">@device.RotationAxisNumber</td>
+                </tr>
+                <tr>
+                    <td class="align-middle">PositionAxisNumber</td>
+                    <td class="align-middle">@device.PositionAxisNumber</td>
+                </tr>
+                @if (device.TerminalElement != null) {
+                    <tr>
+                        <td class="align-middle">TerminalElement</td>
+                        <td class="align-middle">@device.TerminalElement</td>
+                    </tr>
+                }
+                @if (device.AdvancedEnvironmentalConditions != null) {
+                    <tr>
+                        <td class="align-middle">AdvancedEnvironmentalConditions</td>
+                        <td class="align-middle">@device.AdvancedEnvironmentalConditions</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<div class="d-flex flex-column align-items-end">
+    <a type="button" class="btn btn-primary" href="device-overview">
+        Back to overview
+    </a>
+</div>
+
+@code {
+    [Parameter] public string DeviceId { get; set; }
+    private Device device;
+
+    protected override async Task OnInitializedAsync()
+    {
+        device = await DeviceService.GetDeviceByIdAsync(DeviceId);
+    }
+}
