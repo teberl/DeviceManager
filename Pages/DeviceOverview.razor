@@ -5,46 +5,58 @@
 
 <h1>Device Overview</h1>
 
-<p>This component demonstrates fetching data from a service.</p>
-
 @if (devices == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Failsafe</th>
-                <th>DeviceTypeId</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var device in devices)
-            {
+    <div class="table-responsive">
+        <table class="table table-hover table-sm">
+            <thead>
                 <tr>
-                    <td class="align-middle">@device.Name</td>
-                    <td class="align-middle">@device.Failsafe</td>
-                    <td class="align-middle">@device.DeviceTypeId</td>
-                    <td>
-                        <a type="button" class="btn btn-primary" href="devices/@device.DeviceId">
-                            Details
-                        </a>
-                    </td>
+                    <th>Name</th>
+                    <th>Failsafe</th>
+                    <th>DeviceTypeId</th>
+                    <th></th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var device in devices)
+                {
+                    <tr>
+                        <td class="align-middle">@device.Name</td>
+                        <td class="align-middle">@device.Failsafe</td>
+                        <td class="align-middle">@device.DeviceTypeId</td>
+                        <td>
+                            <a type="button" class="btn btn-primary" href="devices/@device.Id">
+                                Details
+                            </a>
+                        </td>
+                        <td>
+                            @* @TODO Implement delete *@
+                            <button type="button" class="btn btn-danger" @onclick="() => DeleteDevice(device.Id)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 
 @code {
-    private Device[] devices;
+    private IList<Device> devices;
 
     protected override async Task OnInitializedAsync()
     {
         devices = await DeviceService.GetDevicesAsync();
+    }
+
+    async Task DeleteDevice(string id)
+    {
+        Console.WriteLine($"Delete Device with id: \"{id}\" is not implemented yet.");
     }
 }
