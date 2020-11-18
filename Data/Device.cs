@@ -1,10 +1,8 @@
-using System;
-
 namespace DeviceManager.Data
 {
     public record Device
     {
-        public string Id { get; init; }
+        public string DeviceId { get; init; }
         public string Name { get; init; }
         public string DeviceTypeId { get; init; }
         public bool Failsafe { get; init; }
