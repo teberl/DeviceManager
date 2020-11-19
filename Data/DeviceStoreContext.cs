@@ -8,6 +8,6 @@ namespace DeviceManager.Data
         {
         }
 
-        public DbSet<DeviceEntity> Devices { get; set; }
+        public DbSet<Device> Devices { get; set; }
     }
 }

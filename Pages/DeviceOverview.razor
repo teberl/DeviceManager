@@ -7,7 +7,7 @@
 
 <h1>Device Overview</h1>
 
-@if (deviceEntities == null)
+@if (devices == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -25,20 +25,19 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var entity in deviceEntities)
+                @foreach (var device in devices)
                 {
                     <tr>
-                        <td class="align-middle">@entity.Name</td>
-                        <td class="align-middle">@entity.Failsafe</td>
-                        <td class="align-middle">@entity.DeviceTypeId</td>
+                        <td class="align-middle">@device.Name</td>
+                        <td class="align-middle">@device.Failsafe</td>
+                        <td class="align-middle">@device.DeviceTypeId</td>
                         <td>
-                            <a type="button" class="btn btn-primary" href="devices/@entity.Id">
+                            <a type="button" class="btn btn-primary" href="devices/@device.Id">
                                 Details
                             </a>
                         </td>
                         <td>
-                            @* @TODO Implement delete *@
-                            <button type="button" class="btn btn-danger" disabled="@isDisabled" @onclick="() => DeleteDevice(entity.Id)">
+                            <button type="button" class="btn btn-danger" disabled="@busy" @onclick="() => DeleteDevice(device.Id)">
                                 Delete
                             </button>
                         </td>
@@ -47,27 +46,31 @@ else
             </tbody>
         </table>
     </div>
+    @if (busy) {
+        <div class="text-center">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Device deletion in progress... (for demonstration purpose 3000ms)
+        </div>
+    }
 }
 
 @code {
-    private List<DeviceEntity> deviceEntities;
+    private List<Device> devices;
     private DeviceStoreContext dbContext;
-    private bool isDisabled;
-
-    private int? isDeletingEntityId;
+    private bool busy;
 
     protected override async Task OnInitializedAsync()
     {
-        isDisabled = true;
+        busy = true;
 
         try
         {
             dbContext = DbFactory.CreateDbContext();
-            deviceEntities = dbContext.Devices.ToList();
+            devices = dbContext.Devices.ToList();
         }
         finally
         {
-            isDisabled = false;
+            busy = false;
         }
 
         await base.OnInitializedAsync();
@@ -81,19 +84,19 @@ else
     async Task DeleteDevice(int id)
     {
         Console.WriteLine($"Delete Device with id: \"{id}\" is not implemented yet.");
-        isDisabled = true;
-        isDeletingEntityId = id;
+        busy = true;
 
         var device = await dbContext.Devices.FirstAsync(entity => entity.Id == id);
 
         if (device != null)
         {
+            await Task.Delay(3000);
             dbContext.Devices.Remove(device);
             await dbContext.SaveChangesAsync();
-            deviceEntities = await dbContext.Devices.ToListAsync();
+            devices = await dbContext.Devices.ToListAsync();
         }
 
-        isDisabled = false;
+        busy = false;
         StateHasChanged();
     }
 }
