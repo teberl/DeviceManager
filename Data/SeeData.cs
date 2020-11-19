@@ -4,9 +4,9 @@ namespace DeviceManager.Data
     {
         public static void Initialize(DeviceStoreContext db)
         {
-            var devices = new DeviceEntity[]
+            var devices = new Device[]
             {
-                new DeviceEntity {
+                new Device {
                     DeviceId = "1glmLrTZqf9YZleN",
                     Name = "S7-150009",
                     DeviceTypeId = "Beweis",
@@ -21,7 +21,7 @@ namespace DeviceManager.Data
                     RotationAxisNumber = 0,
                     PositionAxisNumber = 0
                 },
-                new DeviceEntity {
+                new Device {
                     DeviceId = "1glmLrTZqf9YZleN",
                     Name = "S7-1500",
                     DeviceTypeId = "S7_1500",
@@ -37,7 +37,7 @@ namespace DeviceManager.Data
                     PositionAxisNumber = 0,
                     AdvancedEnvironmentalConditions = false
                 },
-                new DeviceEntity {
+                new Device {
                     DeviceId = "9RLMugEpCVSeemZ5",
                     Name = "ET 200SP",
                     DeviceTypeId = "ET200_SP",
@@ -54,7 +54,7 @@ namespace DeviceManager.Data
                     TerminalElement = true,
                     AdvancedEnvironmentalConditions = false
                 },
-                new DeviceEntity {
+                new Device {
                     DeviceId = "9RLMugEbCVSeemZ4",
                     Name = "S7-300",
                     DeviceTypeId = "S7_300",
