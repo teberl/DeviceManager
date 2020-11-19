@@ -31,6 +31,7 @@ A application based on BlazorServer and EFCore which alows to upload files in a 
 ## Features
 
 - Using blazor for the front-end
+- Response design with bootstrap out of the box (looks even better on smaler screens)
 - Disabling buttons while deleting
 - Giving the user feedback about the upload result
 
