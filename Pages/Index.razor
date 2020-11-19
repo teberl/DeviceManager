@@ -1,5 +1,11 @@
 @page "/"
 
+@using DeviceManager.Data
+@using System.Text;
+@using System.Text.Json;
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<DeviceStoreContext> DbFactory
+
 <h1>DeviceManager v0.1</h1>
 
 <p>
@@ -8,53 +14,62 @@
 </p>
 
 <div class="d-flex flex-column align-items-center my-4">
-    @* @TODO Implement file upload *@
-    <button type="button" class="btn btn-primary" href="">
-        Upload
-    </button>
+    <InputFile OnChange="@OnInputFileChange" accept="application/json" />
+    (Please only upload json file with a max size of 500KB)
 </div>
 
-<p>
-    <h4>Example Format of the files to upload:</h4>
-    <pre>
-        <code>
-{
-    "devices": [
-        {
-            "id": "1glmLrTZqf9YZleN",
-            "name": "S7-150009",
-            "deviceTypeId": "Beweis",
-            "failsafe": true,
-            "tempMin": 0,
-            "tempMax": 60,
-            "installationPosition": "horizontal",
-            "insertInto19InchCabinet": true,
-            "motionEnable": true,
-            "siplusCatalog": true,
-            "simaticCatalog": true,
-            "rotationAxisNumber": 0,
-            "positionAxisNumber": 0
-        },
-        {
-            "id": "9RLMugEbCVSeemZ4",
-            "name": "S7-300",
-            "deviceTypeId": "S7_300",
-            "failsafe": true,
-            "tempMin": 0,
-            "tempMax": 40,
-            "installationPosition": "vertical",
-            "insertInto19InchCabinet": false,
-            "motionEnable": false,
-            "siplusCatalog": false,
-            "simaticCatalog": false,
-            "rotationAxisNumber": 0,
-            "positionAxisNumber": 0,
-            "terminalElement": true,
-            "advancedEnvironmentalConditions": false
-        },
-    ],
+@if (status != null && busy == false) {
+    <div class="alert alert-info" role="alert">
+        @status
+    </div>
 }
-        </code>
-    </pre>
-</p>
 
+@code {
+    private bool busy = false;
+    private string status;
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs eventArgs)
+    {
+        busy = true;
+        var file = eventArgs.File;
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream().ReadAsync(buffer);
+        
+        var fileData = DeserializeResponse(buffer);
+
+        if (fileData.Devices.Length > 0)
+        {
+            await SaveDevices(fileData.Devices);
+        }
+
+    }
+
+    private async Task SaveDevices(Device[] devices)
+    {
+        try
+        {
+            using var dbContext = DbFactory.CreateDbContext();
+            await dbContext.Devices.AddRangeAsync(devices);
+            await dbContext.SaveChangesAsync();
+        }
+        finally
+        {
+            status = $"{devices.Length} devices uploaded";
+            busy = false;
+            ClearUpStatusMessage();
+        }
+    }
+
+    private async Task ClearUpStatusMessage()
+    {
+        await Task.Delay(3000);
+        status = null;
+        StateHasChanged();
+    }
+
+    private static FileData DeserializeResponse(byte[] buffer)
+    {
+        var bytesAsString = Encoding.UTF8.GetString(buffer);
+        return JsonSerializer.Deserialize<FileData>(bytesAsString);
+    }
+}
